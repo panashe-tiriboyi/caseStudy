@@ -1,15 +1,14 @@
 public class BasicContainer extends  Container{
     final public String type = "B";
-    public BasicContainer(int serialNumber, int weight){
-
-        super(serialNumber, weight);
+    BasicContainer(int serialNumber, int weight, String portId) {
+        super(serialNumber, weight, portId);
+        System.out.println("Basic Container was successfully built");
     }
+
 
     @Override
     public void setWeight(int weight) {
-        if (weight > 5000 ) {
-            throw new IllegalArgumentException("Weight cannot exceed 5000t");
-        }
         super.setWeight(weight);
+        System.out.println("Basic Container was successfully built");  System.out.println("Basic Container was successfully built");
     }
 }
