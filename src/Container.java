@@ -8,6 +8,12 @@ public abstract class Container {
 
     protected String portId;
 
+    public static final String RESET = "\u001B[0m";
+    public static final String GREEN = "\u001B[32m";
+    public static final String RED = "\u001B[31m";
+    public static final String MAGENTA = "\u001B[35m";
+
+
 
 
     // Port id where container is currently at
@@ -21,7 +27,7 @@ public abstract class Container {
         if (isValidPort(portId)) {
             this.portId = portId;
         } else {
-            System.out.println("Invalid port ID provided: " + portId);
+            System.out.println(RED + "Invalid port ID provided: " + portId + RESET);
         }
 
 
@@ -32,7 +38,15 @@ public abstract class Container {
     }
 
     public void setWeight(int weight) {
-        this.weight = weight;
+        if (this.type.equals("B") && weight >5000){
+            System.out.println(RED+"This container is a"+RESET+ MAGENTA+" Basic Container"+RESET+RED+" , weight should be <5000.");
+
+        }else
+        {
+            this.weight = weight;
+            System.out.println(GREEN+"Container " + serialNumber+ " new weight of "+weight+"t set. "+ RESET);
+        }
+
     }
 
     public int getWeight() {
@@ -58,8 +72,9 @@ public abstract class Container {
     public void setPortId(String portId) {
         if (isValidPort(portId)) {
             this.portId = portId;
+            System.out.println(GREEN + "Container "+serialNumber+" current port id set to "+portId+RESET);
         } else {
-            System.out.println("Invalid port ID provided: " + portId);
+            System.out.println(RED + "Invalid port ID provided: " + portId + RESET);
         }
     }
 

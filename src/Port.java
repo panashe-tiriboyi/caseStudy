@@ -8,6 +8,11 @@ public class Port implements IPort {
     private ArrayList<Ship> history;
     private ArrayList<Ship> current;
 
+    public static final String RED = "\u001B[31m";
+    public static final String RESET = "\u001B[0m";
+    public static final String GREEN = "\u001B[32m";
+    public static  final String BLUE = "\u001B[34m";
+
     public Port(String Id, double latitude, double longitude) {
         this.Id = Id;
         this.latitude = latitude;
@@ -17,6 +22,7 @@ public class Port implements IPort {
         this.current = new ArrayList<>();
         Container.addValidPort(Id);
         Ship.addValidPort(Id);
+        System.out.println(GREEN + Id + " was successfully built "+ RESET);
     }
 
     @Override

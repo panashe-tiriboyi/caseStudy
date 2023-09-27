@@ -1,3 +1,4 @@
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -32,7 +33,13 @@ public class Ship implements IShip{
     private static ArrayList<String> validPortIds = new ArrayList<>();
 
 
-    public Ship(int ID, double fuelVolume, Port currentPort) {
+    public static final String RED = "\u001B[31m";
+    public static final String RESET = "\u001B[0m";
+    public static final String GREEN = "\u001B[32m";
+
+    public static  final String BLUE = "\u001B[34m";
+
+    public Ship(int Id, double fuelVolume, Port currentPort) {
         // Initialize other variables...
         containers = new ArrayList<>();
         heavyContainerCount = 0;
@@ -41,11 +48,16 @@ public class Ship implements IShip{
         basicContainerCount = 0;
         this.currentPort = currentPort;
         portId = null;
+        this.Id = Id;
+        this.fuelVolume = fuelVolume;
         if (isValidPort(currentPort.getId())) {
             this.portId = currentPort.getId();
+            System.out.println( GREEN + " Ship " + Id + " was successfully built at " + portId + RESET );
         } else {
-            System.out.println("2.Invalid port ID provided: " + portId);
+            System.out.println(RED + "Invalid port ID provided: " + portId + RESET);
         }
+
+
 
     }
 
@@ -110,10 +122,10 @@ public class Ship implements IShip{
 
             }else
             {
-                System.out.println("Container is not on any existing port.");
+                System.out.println(RED + "Container is not on any existing port." + RESET);
             }
         }else{
-            System.out.println("Cannot load container weight limit reached");
+            System.out.println(RED + "Cannot load container weight limit reached" +RESET);
         }
 
 
@@ -165,7 +177,7 @@ public class Ship implements IShip{
             return true;
         }
     } else {
-        System.out.println("Container is not on the ship.");
+        System.out.println(RED + "Container is not on the ship." + RESET);
     }
 
     return false;
@@ -176,24 +188,65 @@ public class Ship implements IShip{
         double distance = calculateDistance(p, currentPort);
         double fuelRequired = calculateFuelRequired(distance);
 
+        DecimalFormat df = new DecimalFormat("#.##");
+        String formattedDistance = df.format(distance);
+        String formattedFuelRequired = df.format(fuelRequired);
+
         if (fuelRequired <= fuelVolume) {
             currentPort.outgoingShip(this);
             currentPort = p;
             currentPort.incomingShip(this);
             fuelVolume -= fuelRequired;
+            String formattedFuelVolume = df.format(fuelVolume);
 
+            for(Container c : containers){
+                c.setPortId(p.getId());
+            }
+
+            System.out.println(GREEN + "Ship " + Id +" has traveled " + formattedDistance +"km from "+currentPort.getId() + " to "+ p.getId() + RESET);
+            System.out.println(BLUE + "Fuel used : "+ formattedFuelRequired + RESET);
+            System.out.println(BLUE +"Fuel left : " + formattedFuelVolume + RESET);
             return true;
         } else {
-            System.out.println("Ship does not have enough fuel to sail to the destination.");
+            System.out.println(RED + "Ship does not have enough fuel to sail to the destination." + RESET);
+            System.out.println(BLUE + "Fuel required is : "+ formattedFuelRequired + RESET);
             return false;
         }
     }
     @Override
     public void reFuel(double newFuel){
         fuelVolume+= newFuel;
+        DecimalFormat df = new DecimalFormat("#.##");
+        String formattedFuelVolume = df.format(fuelVolume);
+        System.out.println(BLUE + "Refuel successfully done, new fuel Volume  : "+ formattedFuelVolume+"liters" + RESET);
     }
     // Add additional methods as per requirements
     // Method to check if a port ID is valid
+
+
+    public void setPortId(String portId) {
+
+        if(isValidPort(portId)){
+            this.portId = portId;
+            System.out.println(GREEN+ "Port "+portId+" successfully edited" + RESET);
+        }else {
+            System.out.println(RED+ "Edit Port failed, Port does not exist" + RESET);
+        }
+
+    }
+
+    public void setFuelVolume(double newFuelVolume){
+        fuelVolume = newFuelVolume;
+        DecimalFormat df = new DecimalFormat("#.##");
+        String formattedFuelVolume = df.format(fuelVolume);
+        System.out.println(GREEN + "New fuel Volume : " + formattedFuelVolume+"liters");
+    }
+
+    public void setCurrentPort(Port p){
+        currentPort= p;
+
+    }
+
     public static boolean isValidPort(String portId) {
         // Implement your logic to validate port existence here
         // For example, you can check if the port ID exists in the list of valid port IDs
@@ -210,6 +263,7 @@ public class Ship implements IShip{
         double xDiff = p.getLatitude() - currentPort.getLatitude();
         double yDiff = p.getLatitude() - currentPort.getLatitude();
         return Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+
 
     }
 
